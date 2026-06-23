@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="400" height="240">
+  <rect width="400" height="240" fill="#1A1D22"/>
+  <rect x="0" y="0" width="400" height="240" fill="#2A2E36" opacity="0.4"/>
+  <path d="M80 160 L100 110 Q110 95 130 95 L270 95 Q290 95 300 110 L320 160 Z" fill="#383C45"/>
+  <rect x="60" y="155" width="280" height="35" rx="8" fill="#2A2E36"/>
+  <circle cx="120" cy="190" r="22" fill="#14161A"/>
+  <circle cx="120" cy="190" r="10" fill="#383C45"/>
+  <circle cx="280" cy="190" r="22" fill="#14161A"/>
+  <circle cx="280" cy="190" r="10" fill="#383C45"/>
+  <text x="200" y="225" font-family="Arial, sans-serif" font-size="12" fill="#5A5E68" text-anchor="middle">geen afbeelding beschikbaar</text>
+</svg>

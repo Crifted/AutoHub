@@ -1,0 +1,65 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie', { actief: 'aanbod' }) %>
+
+<header class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Het aanbod</span>
+    <h1><%= filters.zoek ? '"'+filters.zoek+'"' : 'Alle auto\'s' %></h1>
+    <p>Bekijk onze volledige collectie. Gebruik de filters om snel te vinden wat bij je past.</p>
+  </div>
+</header>
+
+<section class="section-pad" style="padding-top:48px;">
+  <div class="wrap">
+
+    <details class="filter-panel" <%= (filters.prijsMin||filters.prijsMax||filters.bouwjaarMin||filters.bouwjaarMax||filters.vermogenMin||filters.vermogenMax||filters.brandstof||filters.transmissie)?'open':'' %>>
+      <summary>Filters</summary>
+      <form action="/aanbod" method="GET" class="filter-grid">
+        <% if (filters.zoek) { %><input type="hidden" name="zoek" value="<%= filters.zoek %>"><% } %>
+        <input type="hidden" name="sorteer" value="<%= sorteer %>">
+        <div class="fld"><label>Prijs (€)</label><div class="fld-row"><input type="number" name="prijsMin" placeholder="min" value="<%= filters.prijsMin||'' %>"><span class="muted">–</span><input type="number" name="prijsMax" placeholder="max" value="<%= filters.prijsMax||'' %>"></div></div>
+        <div class="fld"><label>Bouwjaar</label><div class="fld-row"><input type="number" name="bouwjaarMin" placeholder="van" value="<%= filters.bouwjaarMin||'' %>"><span class="muted">–</span><input type="number" name="bouwjaarMax" placeholder="tot" value="<%= filters.bouwjaarMax||'' %>"></div></div>
+        <div class="fld"><label>Vermogen (pk)</label><div class="fld-row"><input type="number" name="vermogenMin" placeholder="min" value="<%= filters.vermogenMin||'' %>"><span class="muted">–</span><input type="number" name="vermogenMax" placeholder="max" value="<%= filters.vermogenMax||'' %>"></div></div>
+        <div class="fld"><label>Brandstof</label><select name="brandstof"><option value="">Alle</option><% ['Benzine','Diesel','Elektrisch','Hybride'].forEach(function(b){ %><option <%= filters.brandstof===b?'selected':'' %>><%= b %></option><% }) %></select></div>
+        <div class="fld"><label>Transmissie</label><select name="transmissie"><option value="">Alle</option><% ['Handgeschakeld','Automaat'].forEach(function(t){ %><option <%= filters.transmissie===t?'selected':'' %>><%= t %></option><% }) %></select></div>
+        <div class="fld-row" style="gap:10px;"><button type="submit" class="btn btn-primary">Toepassen</button><a href="/aanbod" class="btn btn-ghost">Wissen</a></div>
+      </form>
+    </details>
+
+    <div class="toolbar">
+      <span class="toolbar-count"><b><%= totaal %></b> auto's gevonden</span>
+      <div class="toolbar-right">
+        <form action="/aanbod" method="GET" class="select-wrap" id="sortForm">
+          <% Object.keys(filters).forEach(function(k){ if(filters[k]){ %><input type="hidden" name="<%= k %>" value="<%= filters[k] %>"><% }}) %>
+          <select name="sorteer" onchange="document.getElementById('sortForm').submit()">
+            <option value="nieuwste" <%= sorteer==='nieuwste'?'selected':'' %>>Nieuwste eerst</option>
+            <option value="prijs-op" <%= sorteer==='prijs-op'?'selected':'' %>>Prijs ↑</option>
+            <option value="prijs-af" <%= sorteer==='prijs-af'?'selected':'' %>>Prijs ↓</option>
+            <option value="bouwjaar-af" <%= sorteer==='bouwjaar-af'?'selected':'' %>>Bouwjaar ↓</option>
+            <option value="vermogen-af" <%= sorteer==='vermogen-af'?'selected':'' %>>Vermogen ↓</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <% if (autos.length===0){ %>
+      <div class="empty"><p>Geen auto's gevonden met deze filters.</p><a href="/aanbod" class="btn btn-primary">Wis filters</a></div>
+    <% } else { %>
+      <div class="grid">
+        <% autos.forEach(function(auto){ %>
+          <%- include('partials/auto-card', { auto: auto, user: user, favorietIds: favorietIds }) %>
+        <% }) %>
+      </div>
+      <% if (totaalPaginas>1){ %>
+        <div class="pagination">
+          <% const qp=(p)=>{const o={...filters,sorteer,pagina:p};Object.keys(o).forEach(k=>!o[k]&&delete o[k]);return new URLSearchParams(o).toString();}; %>
+          <% if (huidigePagina>1){ %><a href="?<%= qp(huidigePagina-1) %>" class="btn btn-ghost btn-sm">← Vorige</a><% }else{ %><span class="btn btn-ghost btn-sm disabled">← Vorige</span><% } %>
+          <span class="muted">Pagina <%= huidigePagina %> / <%= totaalPaginas %></span>
+          <% if (huidigePagina<totaalPaginas){ %><a href="?<%= qp(huidigePagina+1) %>" class="btn btn-ghost btn-sm">Volgende →</a><% }else{ %><span class="btn btn-ghost btn-sm disabled">Volgende →</span><% } %>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

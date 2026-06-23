@@ -1,0 +1,36 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navigatie', { actief: 'admin' }) %>
+<div class="wrap admin-shell">
+  <span class="eyebrow">Beheer</span><h1 style="font-size:40px;">Gebruikers</h1>
+  <%- include('../partials/admin-nav', { adminPagina: 'gebruikers' }) %>
+  <% if (gebruikers.length===0){ %><div class="empty"><p>Geen gebruikers.</p></div><% } else { %>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Naam</th><th>E-mail</th><th>Rol</th><th>Favorieten</th><th>Reviews</th><th>Lid sinds</th><th>Acties</th></tr></thead>
+      <tbody>
+        <% gebruikers.forEach(function(u){ %>
+          <tr>
+            <td><div class="user-cell"><div class="user-av"><%= u.naam.charAt(0).toUpperCase() %></div><%= u.naam %></div></td>
+            <td class="muted"><%= u.email %></td>
+            <td><span class="status-badge <%= u.rol==='admin'?'st-bevestigd':'st-afgerond' %>"><%= u.rol %></span></td>
+            <td><%= u.aantal_favorieten %></td>
+            <td><%= u.aantal_reviews %></td>
+            <td class="muted"><%= new Date(u.aangemaakt_op).toLocaleDateString('nl-NL') %></td>
+            <td>
+              <div class="row-actions">
+                <form action="/admin/gebruikers/<%= u.id %>/rol" method="POST">
+                  <input type="hidden" name="rol" value="<%= u.rol==='admin'?'user':'admin' %>">
+                  <button class="btn btn-ghost btn-sm" <%= (typeof currentUserId!=='undefined' && u.id===currentUserId)?'disabled':'' %>><%= u.rol==='admin'?'Maak user':'Maak admin' %></button>
+                </form>
+                <form action="/admin/gebruikers/<%= u.id %>/verwijderen" method="POST" onsubmit="return confirm('Gebruiker verwijderen?');">
+                  <button class="btn btn-danger btn-sm" <%= (typeof currentUserId!=='undefined' && u.id===currentUserId)?'disabled':'' %>>×</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table></div>
+    <p class="muted" style="margin-top:16px;font-size:13px;">Je kunt je eigen account niet wijzigen of verwijderen.</p>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

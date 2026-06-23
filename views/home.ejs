@@ -1,0 +1,131 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie', { actief: 'home' }) %>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80" alt="" onerror="this.style.display='none'">
+  </div>
+  <div class="wrap hero-content">
+    <span class="eyebrow">Premium occasions · Sinds 2026</span>
+    <h1>Rijd weg in iets<br><span class="shimmer">buitengewoons</span></h1>
+    <p class="hero-sub">Een zorgvuldig samengestelde collectie auto's. Filter, vergelijk en plan een proefrit — alles op één plek, zonder gedoe.</p>
+    <div class="hero-cta">
+      <a href="/aanbod" class="btn btn-primary btn-lg">Bekijk het aanbod
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="/contact" class="btn btn-glass btn-lg">Plan een proefrit</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="mouse"></div></div>
+</header>
+
+<!-- ZOEKBALK -->
+<div class="wrap search-strip">
+  <div class="search-card">
+    <form action="/aanbod" method="GET" style="position:relative;">
+      <div class="live-search-wrap">
+        <input type="text" name="zoek" placeholder="Merk of model…" id="liveSearch" autocomplete="off">
+        <div class="live-results" id="liveResults"></div>
+      </div>
+      <select name="brandstof">
+        <option value="">Alle brandstof</option>
+        <option>Benzine</option><option>Diesel</option><option>Elektrisch</option><option>Hybride</option>
+      </select>
+      <select name="prijsMax">
+        <option value="">Max. prijs</option>
+        <option value="15000">€ 15.000</option><option value="25000">€ 25.000</option><option value="40000">€ 40.000</option><option value="100000">€ 100.000</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Zoeken</button>
+    </form>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="section-pad">
+  <div class="wrap">
+    <div class="stat-band">
+      <div class="stat-cell"><div class="n"><%= totaal %>+</div><div class="l">Auto's op voorraad</div></div>
+      <div class="stat-cell"><div class="n">12</div><div class="l">Topmerken</div></div>
+      <div class="stat-cell"><div class="n">100%</div><div class="l">Gecontroleerd</div></div>
+      <div class="stat-cell"><div class="n">24/7</div><div class="l">Online te bekijken</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- UITGELICHT -->
+<section class="section-pad" style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Uitgelicht</span>
+        <h2>De blikvangers van deze week</h2>
+      </div>
+      <a href="/aanbod" class="btn btn-ghost">Alles bekijken</a>
+    </div>
+    <div class="grid">
+      <% uitgelicht.forEach(function(auto){ %>
+        <%- include('partials/auto-card', { auto: auto, user: user, favorietIds: favorietIds }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- MERKEN MARQUEE -->
+<div class="marque">
+  <div class="marque-track">
+    <% for (let r=0;r<2;r++){ merken.forEach(function(m){ %><span><%= m %></span><% }) } %>
+  </div>
+</div>
+
+<!-- SPLIT 1: kwaliteit -->
+<section class="section-pad">
+  <div class="wrap split">
+    <div class="split-media">
+      <img src="https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1200&q=80" alt="" onerror="this.parentElement.style.background='var(--surface)'">
+    </div>
+    <div class="split-body">
+      <span class="eyebrow">Waarom AutoHub</span>
+      <h2>Zonder zorgen naar je volgende auto</h2>
+      <p>We maken autozoeken weer leuk. Geen onoverzichtelijke lijsten, maar een strakke ervaring waarin jij in controle bent.</p>
+      <div class="feature-list">
+        <div class="feature-item"><div class="feature-ic"><svg viewBox="0 0 24 24"><path d="M21 21l-5.6-5.6M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><div><h4>Slim filteren</h4><p>Vind in seconden op merk, prijs, bouwjaar, vermogen en brandstof.</p></div></div>
+        <div class="feature-item"><div class="feature-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><div><h4>Volledig gecontroleerd</h4><p>Elke auto met complete specificaties en eerlijke omschrijving.</p></div></div>
+        <div class="feature-item"><div class="feature-ic"><svg viewBox="0 0 24 24"><path d="M3 13h2l2-6h10l2 6h2M6 17a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm12 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg></div><div><h4>Proefrit in 2 klikken</h4><p>Plan direct vanaf de auto een proefrit op jouw moment.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NIEUWSTE -->
+<section class="section-pad" style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Vers binnen</span><h2>Nieuw in de collectie</h2></div>
+      <a href="/aanbod?sorteer=nieuwste" class="btn btn-ghost">Meer nieuw</a>
+    </div>
+    <div class="grid">
+      <% nieuwste.slice(0,3).forEach(function(auto){ %>
+        <%- include('partials/auto-card', { auto: auto, user: user, favorietIds: favorietIds }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="section-pad" style="padding-top:0;">
+  <div class="wrap">
+    <div class="cta-band">
+      <div class="cta-band-bg"><img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=80" alt="" onerror="this.style.display='none'"></div>
+      <span class="eyebrow">Klaar voor de volgende stap?</span>
+      <h2>Jouw droomauto staat op je te wachten</h2>
+      <p>Bekijk het volledige aanbod of plan vrijblijvend een proefrit. Wij regelen de rest.</p>
+      <div class="hero-cta" style="justify-content:center;">
+        <a href="/aanbod" class="btn btn-hot btn-lg">Start met zoeken</a>
+        <a href="/contact" class="btn btn-glass btn-lg">Neem contact op</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

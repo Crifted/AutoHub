@@ -1,0 +1,39 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie', { actief: 'vergelijken' }) %>
+<header class="page-head"><div class="wrap"><span class="eyebrow">Naast elkaar</span><h1>Vergelijken</h1><p>Zet auto's naast elkaar en vergelijk de specificaties.</p></div></header>
+<section class="section-pad" style="padding-top:48px;"><div class="wrap">
+  <% if (autos.length===0){ %>
+    <div class="empty"><p>Nog geen auto's geselecteerd om te vergelijken.</p><a href="/aanbod" class="btn btn-primary">Bekijk aanbod</a></div>
+  <% } else { %>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:18px;">
+      <button id="vergelijkClear" class="btn btn-ghost btn-sm">Vergelijking wissen</button>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl" id="vergelijkTbl" data-ids="<%= autos.map(a=>a.id).join(',') %>">
+        <thead>
+          <tr>
+            <th></th>
+            <% autos.forEach(function(a){ %>
+              <th>
+                <%= a.merk %> <%= a.model %>
+                <button type="button" class="cmp-rm-btn" data-id="<%= a.id %>" title="Verwijder uit vergelijking">&times;</button>
+              </th>
+            <% }) %>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="muted">Foto</td><% autos.forEach(function(a){ %><td><div class="tbl-thumb" style="width:130px;height:84px;"><img src="<%= a.afbeelding_url %>" onerror="this.onerror=null;this.src='/img/auto-placeholder.svg';"></div></td><% }) %></tr>
+          <tr><td class="muted">Prijs</td><% autos.forEach(function(a){ %><td class="tbl-price">€ <%= Number(a.prijs).toLocaleString('nl-NL') %></td><% }) %></tr>
+          <tr><td class="muted">Bouwjaar</td><% autos.forEach(function(a){ %><td><%= a.bouwjaar %></td><% }) %></tr>
+          <tr><td class="muted">Vermogen</td><% autos.forEach(function(a){ %><td><%= a.vermogen_pk %> pk</td><% }) %></tr>
+          <tr><td class="muted">Brandstof</td><% autos.forEach(function(a){ %><td><%= a.brandstof %></td><% }) %></tr>
+          <tr><td class="muted">Transmissie</td><% autos.forEach(function(a){ %><td><%= a.transmissie %></td><% }) %></tr>
+          <tr><td class="muted">Km-stand</td><% autos.forEach(function(a){ %><td><%= Number(a.kilometerstand).toLocaleString('nl-NL') %></td><% }) %></tr>
+          <tr><td></td><% autos.forEach(function(a){ %><td><a href="/auto/<%= a.id %>" class="btn btn-ghost btn-sm">Bekijk</a></td><% }) %></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:20px;font-size:14px;">Gebruik de <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:middle;"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>-knop op een auto om hem toe te voegen aan de vergelijking.</p>
+  <% } %>
+</div></section>
+<%- include('partials/footer') %>

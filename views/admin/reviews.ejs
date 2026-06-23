@@ -1,0 +1,18 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navigatie', { actief: 'admin' }) %>
+<div class="wrap admin-shell">
+  <span class="eyebrow">Beheer</span><h1 style="font-size:40px;">Reviews</h1>
+  <%- include('../partials/admin-nav', { adminPagina: 'reviews' }) %>
+  <% if (reviews.length===0){ %><div class="empty"><p>Nog geen reviews.</p></div><% } else { %>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Auto</th><th>Gebruiker</th><th>Score</th><th>Titel</th><th>Datum</th><th></th></tr></thead>
+      <tbody>
+        <% reviews.forEach(function(r){ %>
+          <tr><td><%= r.merk %> <%= r.model %></td><td><%= r.gebruiker_naam %></td><td><%- include('../partials/sterren', { score: r.sterren }) %></td><td><%= r.titel %></td><td><%= new Date(r.geplaatst_op).toLocaleDateString('nl-NL') %></td>
+          <td><form action="/admin/reviews/<%= r.id %>/verwijderen" method="POST" onsubmit="return confirm('Verwijderen?');"><button class="btn btn-danger btn-sm">×</button></form></td></tr>
+        <% }) %>
+      </tbody>
+    </table></div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

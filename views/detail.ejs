@@ -1,0 +1,150 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie') %>
+
+<div class="wrap detail-hero">
+  <div class="crumb"><a href="/aanbod">Aanbod</a> &nbsp;›&nbsp; <%= auto.merk %> <%= auto.model %></div>
+  <div class="detail-layout">
+    <div class="detail-main">
+      <div class="gallery-main"><img src="<%= auto.fotos[0].foto_url %>" alt="<%= auto.merk %> <%= auto.model %>" id="mainImg" onerror="this.onerror=null;this.src='/img/auto-placeholder.svg';"></div>
+      <% if (auto.fotos.length>1){ %>
+        <div class="gallery-thumbs">
+          <% auto.fotos.forEach(function(f,i){ %>
+            <button class="gthumb <%= i===0?'active':'' %>" onclick="wisselFoto('<%= f.foto_url %>',this)"><img src="<%= f.foto_url %>" alt="" onerror="this.onerror=null;this.src='/img/auto-placeholder.svg';"></button>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="block">
+        <h2>Over deze auto</h2>
+        <p><%= auto.omschrijving || 'Geen omschrijving beschikbaar.' %></p>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="block" id="reviews">
+        <div class="rev-head">
+          <% if (auto.aantal_reviews>0){ %>
+            <span class="rev-score"><%= auto.gem_sterren %></span>
+            <div><%- include('partials/sterren', { score: auto.gem_sterren }) %><div class="muted" style="font-size:14px;"><%= auto.aantal_reviews %> reviews</div></div>
+          <% } else { %><h2>Reviews</h2><% } %>
+        </div>
+        <% if (typeof reviewSucces!=='undefined' && reviewSucces){ %><div class="note note-ok">Bedankt voor je review!</div><% } %>
+        <% if (typeof reviewFout!=='undefined' && reviewFout){ %><div class="note note-bad"><%= reviewFout %></div><% } %>
+        <% if (auto.reviews.length===0){ %><p style="margin-bottom:24px;">Nog geen reviews. Wees de eerste!</p><% } else { %>
+          <div class="rev-list">
+            <% auto.reviews.forEach(function(r){ %>
+              <div class="rev reveal">
+                <div class="rev-top"><div class="rev-av"><%= r.gebruiker_naam.charAt(0).toUpperCase() %></div><div><div class="rev-nm"><%= r.gebruiker_naam %></div><%- include('partials/sterren', { score: r.sterren }) %></div></div>
+                <h4><%= r.titel %></h4><p><%= r.tekst %></p>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+        <% if (user){ %>
+          <div class="rev-form">
+            <h3>Schrijf een review</h3>
+            <form action="/auto/<%= auto.id %>/review" method="POST">
+              <div class="field"><label>Score</label><div class="star-pick"><% for(let i=5;i>=1;i--){ %><input type="radio" name="sterren" value="<%= i %>" id="s<%= i %>" <%= i===5?'checked':'' %>><label for="s<%= i %>"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6L5.7 21 8 14 2 9.6h7.6z"/></svg></label><% } %></div></div>
+              <div class="field"><label>Titel</label><input type="text" name="titel" required placeholder="Korte samenvatting"></div>
+              <div class="field"><label>Je ervaring</label><textarea name="tekst" required placeholder="Vertel over deze auto…"></textarea></div>
+              <button class="btn btn-primary">Plaats review</button>
+            </form>
+          </div>
+        <% } else { %><p><a href="/login" class="hot">Log in</a> om een review te plaatsen.</p><% } %>
+      </div>
+
+      <!-- PROEFRIT -->
+      <div class="block" id="proefrit">
+        <h2>Proefrit aanvragen</h2>
+        <% if (typeof proefritSucces!=='undefined' && proefritSucces){ %><div class="note note-ok">Je aanvraag is ontvangen! We nemen snel contact op.</div><% } %>
+        <div class="booking">
+          <form action="/auto/<%= auto.id %>/proefrit" method="POST">
+            <div class="field-grid">
+              <div class="field"><label>Naam</label><input type="text" name="naam" required value="<%= user?user.naam:'' %>"></div>
+              <div class="field"><label>E-mail</label><input type="email" name="email" required value="<%= user?user.email:'' %>"></div>
+              <div class="field"><label>Telefoon</label><input type="tel" name="telefoon" placeholder="06…"></div>
+              <div class="field"><label>Gewenste datum</label><input type="date" name="gewenste_datum" required></div>
+            </div>
+            <div class="field"><label>Opmerking</label><textarea name="opmerking" placeholder="Bijv. voorkeur ochtend/middag"></textarea></div>
+            <button class="btn btn-hot">Proefrit aanvragen</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZIJBALK -->
+    <aside class="detail-side">
+      <div class="detail-side-sticky">
+        <% if (auto.is_nieuw){ %><span class="tag tag-new" style="display:inline-block;margin-bottom:12px;">Nieuw binnen</span><% } %>
+        <h1 style="font-size:34px;"><%= auto.merk %> <%= auto.model %></h1>
+        <% if (auto.aantal_reviews>0){ %><div style="margin:10px 0;"><%- include('partials/sterren', { score: auto.gem_sterren }) %> <span class="muted" style="font-size:13px;"><%= auto.gem_sterren %> · <%= auto.aantal_reviews %></span></div><% } %>
+        <div class="detail-price" id="basisPrijs" data-prijs="<%= auto.prijs %>">€ <%= Number(auto.prijs).toLocaleString('nl-NL') %></div>
+
+        <% if (user){ %>
+          <form action="/favorieten/toggle/<%= auto.id %>" method="POST" class="fav-form"><button type="submit" class="btn btn-glass btn-block fav-detail-btn <%= isFavoriet?'active':'' %>" style="margin-bottom:12px;"><svg viewBox="0 0 24 24" width="16" height="16" style="fill:<%= isFavoriet?'var(--hot)':'none' %>;stroke:<%= isFavoriet?'var(--hot)':'currentColor' %>;stroke-width:2;"><path d="M12 21s-7.5-4.8-10-9.2C.6 9 1.5 5.5 4.5 4.6 6.7 4 8.9 5 10 6.9 11.1 5 13.3 4 15.5 4.6c3 .9 3.9 4.4 2.5 7.2C19.5 16.2 12 21 12 21z"/></svg><span><%= isFavoriet?'In favorieten':'Bewaar favoriet' %></span></button></form>
+        <% } else { %><a href="/login" class="btn btn-glass btn-block" style="margin-bottom:12px;">Log in voor favorieten</a><% } %>
+        <div style="display:flex;gap:10px;margin-bottom:24px;"><a href="#proefrit" class="btn btn-hot" style="flex:1;">Proefrit</a><button type="button" id="detailCmpBtn" class="btn btn-ghost" style="flex:1;" data-id="<%= auto.id %>" data-merk="<%= auto.merk %>" data-model="<%= auto.model %>">Vergelijk</button></div>
+
+        <div class="spec-sheet">
+          <div class="spec-line"><span class="k">Bouwjaar</span><span class="v"><%= auto.bouwjaar %></span></div>
+          <div class="spec-line"><span class="k">Vermogen</span><span class="v"><%= auto.vermogen_pk %> pk</span></div>
+          <div class="spec-line"><span class="k">Brandstof</span><span class="v"><%= auto.brandstof %></span></div>
+          <div class="spec-line"><span class="k">Transmissie</span><span class="v"><%= auto.transmissie %></span></div>
+          <div class="spec-line"><span class="k">Kilometerstand</span><span class="v"><%= Number(auto.kilometerstand).toLocaleString('nl-NL') %> km</span></div>
+          <div class="spec-line"><span class="k">Kleur</span><span class="v"><%= auto.kleur||'-' %></span></div>
+        </div>
+
+        <% if (auto.tuningOpties && auto.tuningOpties.length>0){ %>
+          <div class="calc">
+            <h3>Stel samen</h3>
+            <p class="muted" style="font-size:13px;margin-bottom:12px;">Kies opties, zie de totaalprijs.</p>
+            <% auto.tuningOpties.forEach(function(o){ %>
+              <label class="calc-opt"><input type="checkbox" class="tuning-check" data-prijs="<%= o.prijs_extra %>"><span class="nm"><%= o.naam %></span><span class="pr">+€ <%= Number(o.prijs_extra).toLocaleString('nl-NL') %></span></label>
+            <% }) %>
+            <div class="calc-total"><span>Totaal</span><span class="amt" id="totaalPrijs">€ <%= Number(auto.prijs).toLocaleString('nl-NL') %></span></div>
+          </div>
+        <% } %>
+
+        <!-- FINANCIERING CALCULATOR -->
+        <div class="calc finance" id="finance" data-prijs="<%= auto.prijs %>">
+          <h3>Financiering berekenen</h3>
+          <p class="muted" style="font-size:13px;margin-bottom:16px;">Indicatief maandbedrag, geen aanbod.</p>
+
+          <div class="fin-row">
+            <label>Aanbetaling</label>
+            <span class="fin-val" id="finAanbetaalVal">€ 2.000</span>
+          </div>
+          <input type="range" class="fin-slider" id="finAanbetaal" min="0" max="20000" step="500" value="2000">
+
+          <div class="fin-row" style="margin-top:16px;">
+            <label>Looptijd</label>
+            <span class="fin-val" id="finLooptijdVal">60 maanden</span>
+          </div>
+          <input type="range" class="fin-slider" id="finLooptijd" min="12" max="84" step="12" value="60">
+
+          <div class="fin-result">
+            <div>
+              <div class="muted" style="font-size:12px;">Vanaf per maand</div>
+              <div class="fin-amount" id="finMaand">€ 0</div>
+            </div>
+            <div class="fin-meta">
+              <div class="muted" style="font-size:12px;">Te financieren</div>
+              <div id="finBedrag" style="font-family:'Sora';font-weight:600;">€ 0</div>
+            </div>
+          </div>
+          <p class="muted" style="font-size:11px;margin-top:12px;">Rekenvoorbeeld o.b.v. 6,9% rente per jaar. Vraag een persoonlijk voorstel aan.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <% if (onlangsBekeken && onlangsBekeken.length>0){ %>
+    <div class="block">
+      <h2>Onlangs bekeken</h2>
+      <div class="grid" style="margin-top:24px;">
+        <% onlangsBekeken.forEach(function(auto){ %><%- include('partials/auto-card', { auto: auto, user: user, favorietIds: new Set() }) %><% }) %>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

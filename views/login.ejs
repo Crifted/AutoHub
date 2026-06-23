@@ -1,0 +1,17 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie') %>
+<div class="auth-shell">
+  <div class="auth-card reveal">
+    <h1>Welkom terug</h1>
+    <p class="muted">Log in om je favorieten en reviews te beheren.</p>
+    <% if (typeof melding!=='undefined' && melding){ %><div class="note note-bad">Log eerst in om verder te gaan.</div><% } %>
+    <% if (fout){ %><div class="note note-bad"><%= fout %></div><% } %>
+    <form action="/login" method="POST">
+      <div class="field"><label>E-mailadres</label><input type="email" name="email" required placeholder="jij@voorbeeld.nl"></div>
+      <div class="field"><label>Wachtwoord</label><input type="password" name="wachtwoord" required placeholder="••••••••"></div>
+      <button class="btn btn-primary btn-block btn-lg">Inloggen</button>
+    </form>
+    <div class="auth-foot">Nog geen account? <a href="/registreren">Registreer hier</a></div>
+  </div>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,51 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navigatie', { actief: 'admin' }) %>
+<div class="form-shell">
+  <span class="eyebrow"><%= auto?'Bewerken':'Toevoegen' %></span>
+  <h1 style="font-size:36px;margin:8px 0 28px;"><%= auto?'Auto bewerken':'Nieuwe auto' %></h1>
+  <div class="form-card">
+    <% if (fout){ %><div class="note note-bad"><%= fout %></div><% } %>
+    <form action="<%= actie %>" method="POST" enctype="multipart/form-data">
+      <div class="field-grid">
+        <div class="field"><label>Merk</label><input type="text" name="merk" value="<%= auto?auto.merk:'' %>" required></div>
+        <div class="field"><label>Model</label><input type="text" name="model" value="<%= auto?auto.model:'' %>" required></div>
+        <div class="field"><label>Bouwjaar</label><input type="number" name="bouwjaar" value="<%= auto?auto.bouwjaar:'' %>" required></div>
+        <div class="field"><label>Prijs (€)</label><input type="number" step="0.01" name="prijs" value="<%= auto?auto.prijs:'' %>" required></div>
+        <div class="field"><label>Vermogen (pk)</label><input type="number" name="vermogen_pk" value="<%= auto?auto.vermogen_pk:'' %>" required></div>
+        <div class="field"><label>Kilometerstand</label><input type="number" name="kilometerstand" value="<%= auto?auto.kilometerstand:'' %>"></div>
+        <div class="field"><label>Brandstof</label><select name="brandstof" required><% ['Benzine','Diesel','Elektrisch','Hybride'].forEach(function(o){ %><option <%= auto&&auto.brandstof===o?'selected':'' %>><%= o %></option><% }) %></select></div>
+        <div class="field"><label>Transmissie</label><select name="transmissie"><% ['Handgeschakeld','Automaat'].forEach(function(o){ %><option <%= auto&&auto.transmissie===o?'selected':'' %>><%= o %></option><% }) %></select></div>
+        <div class="field"><label>Kleur</label><input type="text" name="kleur" value="<%= auto?(auto.kleur||''):'' %>"></div>
+      </div>
+      <div class="field"><label>Omschrijving</label><textarea name="omschrijving"><%= auto?(auto.omschrijving||''):'' %></textarea></div>
+      <div class="field"><label>Hoofdafbeelding</label><div class="upload-zone"><input type="file" name="afbeelding" accept="image/png,image/jpeg,image/webp"><p class="hint">Laat leeg om de huidige te behouden · max 5MB</p></div></div>
+      <div style="display:flex;gap:12px;margin-top:8px;"><button class="btn btn-primary btn-lg">Opslaan</button><a href="/admin/autos" class="btn btn-ghost btn-lg">Annuleren</a></div>
+    </form>
+
+    <% if (auto && auto.fotos && auto.fotos.length){ %>
+      <div style="margin-top:40px;padding-top:32px;border-top:1px solid var(--line);">
+        <h3 style="margin-bottom:6px;">Foto-galerij</h3>
+        <p class="muted" style="font-size:13px;margin-bottom:20px;">Beheer de extra foto's die op de detailpagina verschijnen.</p>
+        <div class="gallery-manage">
+          <% auto.fotos.forEach(function(f){ %>
+            <div class="gm-item">
+              <img src="<%= f.foto_url %>" onerror="this.onerror=null;this.src='/img/auto-placeholder.svg';">
+              <% if (f.id){ %>
+                <form action="/admin/autos/<%= auto.id %>/foto/<%= f.id %>/verwijderen" method="POST" onsubmit="return confirm('Foto verwijderen?');">
+                  <button class="gm-del" aria-label="Verwijder foto">×</button>
+                </form>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+        <form action="/admin/autos/<%= auto.id %>/foto" method="POST" enctype="multipart/form-data" class="gm-add">
+          <input type="file" name="foto" accept="image/png,image/jpeg,image/webp">
+          <span class="muted" style="font-size:13px;">of plak een URL:</span>
+          <input type="text" name="foto_url" placeholder="https://…" style="flex:1;min-width:160px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;color:var(--text);font-family:inherit;">
+          <button class="btn btn-ghost btn-sm">Foto toevoegen</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</div>
+<%- include('../partials/footer') %>

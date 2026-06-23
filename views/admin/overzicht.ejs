@@ -1,0 +1,43 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navigatie', { actief: 'admin' }) %>
+<div class="wrap admin-shell">
+  <span class="eyebrow">Beheer</span><h1 style="font-size:40px;">Auto's</h1>
+  <%- include('../partials/admin-nav', { adminPagina: 'autos' }) %>
+  <div class="admin-bar">
+    <form action="/admin/autos" method="GET"><input type="text" name="zoek" placeholder="Zoek merk of model…" value="<%= zoek %>"></form>
+    <a href="/admin/autos/nieuw" class="btn btn-primary">+ Nieuwe auto</a>
+  </div>
+
+  <% if (autos.length===0){ %><div class="empty"><p>Geen auto's gevonden.</p></div><% } else { %>
+    <form action="/admin/autos/bulk" method="POST" id="bulkForm">
+      <div class="bulk-bar" id="bulkBar">
+        <span class="bulk-count"><span id="bulkN">0</span> geselecteerd</span>
+        <div class="bulk-actions">
+          <button type="submit" name="actie" value="populair-aan" class="btn btn-ghost btn-sm">★ Populair aan</button>
+          <button type="submit" name="actie" value="populair-uit" class="btn btn-ghost btn-sm">Populair uit</button>
+          <button type="submit" name="actie" value="nieuw-aan" class="btn btn-ghost btn-sm">Nieuw aan</button>
+          <button type="submit" name="actie" value="verwijderen" class="btn btn-danger btn-sm" onclick="return confirm('Geselecteerde auto\'s verwijderen?');">Verwijderen</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr>
+          <th style="width:40px;"><input type="checkbox" id="checkAll" class="chk"></th>
+          <th>Foto</th><th>Merk</th><th>Model</th><th>Jaar</th><th>Prijs</th><th>Labels</th><th>Acties</th>
+        </tr></thead>
+        <tbody>
+          <% autos.forEach(function(a){ %>
+            <tr>
+              <td><input type="checkbox" name="ids" value="<%= a.id %>" class="chk row-chk"></td>
+              <td><div class="tbl-thumb"><img src="<%= a.afbeelding_url %>" onerror="this.onerror=null;this.src='/img/auto-placeholder.svg';"></div></td>
+              <td><%= a.merk %></td><td><%= a.model %></td><td><%= a.bouwjaar %></td>
+              <td class="tbl-price">€ <%= Number(a.prijs).toLocaleString('nl-NL') %></td>
+              <td><% if(a.is_nieuw){ %><span class="tag tag-new" style="position:static;">Nieuw</span> <% } %><% if(a.is_populair){ %><span class="tag tag-hot" style="position:static;">Pop</span><% } %></td>
+              <td><div class="row-actions"><a href="/admin/autos/<%= a.id %>/bewerken" class="btn btn-ghost btn-sm">Bewerk</a><a href="/auto/<%= a.id %>" class="btn btn-ghost btn-sm" target="_blank">↗</a></div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    </form>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

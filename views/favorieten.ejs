@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie', { actief: 'favorieten' }) %>
+<header class="page-head"><div class="wrap"><span class="eyebrow">Bewaard</span><h1>Mijn favorieten</h1><p>De auto's die jij hebt opgeslagen.</p></div></header>
+<section class="section-pad" style="padding-top:48px;"><div class="wrap">
+  <% if (autos.length===0){ %>
+    <div class="empty"><p>Je hebt nog geen favorieten opgeslagen.</p><a href="/aanbod" class="btn btn-primary">Bekijk aanbod</a></div>
+  <% } else { %>
+    <div class="grid">
+      <% const favorietIds=new Set(autos.map(a=>a.id)); autos.forEach(function(auto){ %><%- include('partials/auto-card', { auto: auto, user: user, favorietIds: favorietIds }) %><% }) %>
+    </div>
+  <% } %>
+</div></section>
+<%- include('partials/footer') %>

@@ -1,0 +1,35 @@
+<article class="car reveal">
+  <div class="car-media">
+    <img src="<%= auto.afbeelding_url %>" alt="<%= auto.merk %> <%= auto.model %>" loading="lazy" onerror="this.onerror=null;this.src='/img/auto-placeholder.svg';">
+    <div class="car-tags">
+      <% if (auto.is_nieuw) { %><span class="tag tag-new">Nieuw</span><% } %>
+      <% if (auto.is_populair) { %><span class="tag tag-hot">Populair</span><% } %>
+    </div>
+    <button type="button" class="car-cmp" data-id="<%= auto.id %>" data-merk="<%= auto.merk %>" data-model="<%= auto.model %>" aria-label="Vergelijk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+    </button>
+    <% if (user) { %>
+      <form action="/favorieten/toggle/<%= auto.id %>" method="POST" class="fav-form" style="position:absolute;top:0;right:0;z-index:3;">
+        <button type="submit" class="car-fav <%= (favorietIds&&favorietIds.has(auto.id))?'active':'' %>" aria-label="Favoriet">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.8-10-9.2C.6 9 1.5 5.5 4.5 4.6 6.7 4 8.9 5 10 6.9 11.1 5 13.3 4 15.5 4.6c3 .9 3.9 4.4 2.5 7.2C19.5 16.2 12 21 12 21z"/></svg>
+        </button>
+      </form>
+    <% } %>
+    <div class="car-price-float">€ <%= Number(auto.prijs).toLocaleString('nl-NL') %></div>
+  </div>
+  <div class="car-body">
+    <div class="car-top">
+      <span class="car-name"><%= auto.merk %> <%= auto.model %></span>
+      <% if (typeof auto.gem_sterren!=='undefined' && auto.gem_sterren) { %>
+        <span class="car-rating"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6L5.7 21 8 14 2 9.6h7.6z"/></svg><%= auto.gem_sterren %></span>
+      <% } %>
+    </div>
+    <div class="car-meta"><%= auto.kleur || '' %><%= auto.kleur ? ' · ' : '' %><%= Number(auto.kilometerstand).toLocaleString('nl-NL') %> km</div>
+    <div class="car-specs">
+      <div class="car-spec"><span class="v"><%= auto.bouwjaar %></span><span class="k">Bouwjaar</span></div>
+      <div class="car-spec"><span class="v"><%= auto.vermogen_pk %></span><span class="k">pk</span></div>
+      <div class="car-spec"><span class="v"><%= auto.brandstof %></span><span class="k">Brandstof</span></div>
+    </div>
+  </div>
+  <a href="/auto/<%= auto.id %>" class="car-link" aria-label="Bekijk <%= auto.merk %> <%= auto.model %>"></a>
+</article>

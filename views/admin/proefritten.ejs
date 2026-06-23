@@ -1,0 +1,21 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navigatie', { actief: 'admin' }) %>
+<div class="wrap admin-shell">
+  <span class="eyebrow">Beheer</span><h1 style="font-size:40px;">Proefritten</h1>
+  <%- include('../partials/admin-nav', { adminPagina: 'proefritten' }) %>
+  <% if (proefritten.length===0){ %><div class="empty"><p>Nog geen proefrit-aanvragen.</p></div><% } else { %>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Auto</th><th>Naam</th><th>Contact</th><th>Datum</th><th>Status</th><th>Wijzig</th></tr></thead>
+      <tbody>
+        <% proefritten.forEach(function(p){ %>
+          <tr><td><%= p.merk %> <%= p.model %></td><td><%= p.naam %></td>
+          <td><%= p.email %><% if(p.telefoon){ %><br><span class="muted"><%= p.telefoon %></span><% } %></td>
+          <td><%= new Date(p.gewenste_datum).toLocaleDateString('nl-NL') %></td>
+          <td><span class="status-badge st-<%= p.status %>"><%= p.status %></span></td>
+          <td><form action="/admin/proefritten/<%= p.id %>/status" method="POST"><select name="status" onchange="this.form.submit()" style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);padding:6px 10px;font-size:12px;"><% ['aangevraagd','bevestigd','afgerond','geannuleerd'].forEach(function(s){ %><option <%= p.status===s?'selected':'' %>><%= s %></option><% }) %></select></form></td></tr>
+        <% }) %>
+      </tbody>
+    </table></div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

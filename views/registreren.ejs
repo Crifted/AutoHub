@@ -1,0 +1,18 @@
+<%- include('partials/head') %>
+<%- include('partials/navigatie') %>
+<div class="auth-shell">
+  <div class="auth-card reveal">
+    <h1>Account aanmaken</h1>
+    <p class="muted">Maak gratis een account en bewaar je favoriete auto's.</p>
+    <% if (fout){ %><div class="note note-bad"><%= fout %></div><% } %>
+    <form action="/registreren" method="POST">
+      <div class="field"><label>Naam</label><input type="text" name="naam" required placeholder="Voor- en achternaam"></div>
+      <div class="field"><label>E-mailadres</label><input type="email" name="email" required placeholder="jij@voorbeeld.nl"></div>
+      <div class="field"><label>Wachtwoord</label><input type="password" name="wachtwoord" required placeholder="Minimaal 6 tekens"></div>
+      <div class="field"><label>Herhaal wachtwoord</label><input type="password" name="wachtwoordHerhaal" required placeholder="••••••••"></div>
+      <button class="btn btn-primary btn-block btn-lg">Account aanmaken</button>
+    </form>
+    <div class="auth-foot">Al een account? <a href="/login">Log in</a></div>
+  </div>
+</div>
+<%- include('partials/footer') %>

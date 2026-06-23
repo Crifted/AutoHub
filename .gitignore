@@ -1,0 +1,12 @@
+node_modules/
+.env
+public/img/uploads/
+.DS_Store
+npm-debug.log
+*.log
+
+# losse root-bestanden (staan netjes in docs/)
+ERD_AutoHub.pdf
+UML_AutoHub.pdf
+Testrapport_AutoHub.pdf
+verslagauto.docx

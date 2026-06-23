@@ -1,0 +1,27 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navigatie', { actief: 'admin' }) %>
+<div class="wrap admin-shell">
+  <span class="eyebrow">Beheer</span>
+  <h1 style="font-size:40px;">Dashboard</h1>
+  <%- include('../partials/admin-nav', { adminPagina: 'dashboard' }) %>
+  <div class="stat-cards">
+    <div class="scard reveal"><div class="ic">🚗</div><div class="n"><%= stats.totaalAutos %></div><div class="l">Auto's</div></div>
+    <div class="scard reveal reveal-d1"><div class="ic">👤</div><div class="n"><%= stats.totaalUsers %></div><div class="l">Gebruikers</div></div>
+    <div class="scard reveal reveal-d2"><div class="ic">⭐</div><div class="n"><%= stats.totaalReviews %></div><div class="l">Reviews</div></div>
+    <div class="scard reveal reveal-d3"><div class="ic">🔑</div><div class="n"><%= stats.totaalProefritten %></div><div class="l">Proefritten</div></div>
+    <div class="scard reveal"><div class="ic">💶</div><div class="n" style="font-size:24px;">€ <%= Number(stats.gemPrijs).toLocaleString('nl-NL') %></div><div class="l">Gem. prijs</div></div>
+  </div>
+  <div class="dash-2col">
+    <div class="panel reveal"><h3>Auto's per merk</h3>
+      <% const mm=Math.max(...stats.merkVerdeling.map(m=>m.aantal),1); stats.merkVerdeling.forEach(function(m){ %>
+        <div class="bar"><span class="lbl"><%= m.merk %></span><div class="track"><div class="fill" style="width:<%= m.aantal/mm*100 %>%"></div></div><span class="val"><%= m.aantal %></span></div>
+      <% }) %>
+    </div>
+    <div class="panel reveal reveal-d1"><h3>Brandstofverdeling</h3>
+      <% const bm=Math.max(...stats.brandstofVerdeling.map(b=>b.aantal),1); stats.brandstofVerdeling.forEach(function(b){ %>
+        <div class="bar"><span class="lbl"><%= b.brandstof %></span><div class="track"><div class="fill hot" style="width:<%= b.aantal/bm*100 %>%"></div></div><span class="val"><%= b.aantal %></span></div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>
